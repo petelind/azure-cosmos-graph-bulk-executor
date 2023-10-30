@@ -21,6 +21,7 @@ public final class BulkGremlinObjectMapper {
 
         SimpleModule vertexModule = new SimpleModule("GremlinVertexModule");
         vertexModule.addSerializer(GremlinVertex.class, new GremlinVertexSerializer(GremlinVertex.class));
+        vertexModule.addDeserializer(GremlinVertex.class, new GremlinVertexDeserializer());
         mapper.registerModule(vertexModule);
 
         SimpleModule edgeModule = new SimpleModule("GremlinEdgeModule");
