@@ -12,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
@@ -32,6 +33,41 @@ class GremlinVertexDeserializationTest {
 
         GremlinVertex deserializedVertex = mapper.readValue(serializedContent, GremlinVertex.class);
         assert vertex.equals(deserializedVertex);
+
+    }
+
+    @Test
+    void testDeserializationOfBasicGremlinVertexes() throws JsonProcessingException {
+
+        GremlinVertex[] vertexes = new GremlinVertex[10];
+        for (int i = 0; i < 10; i++) {
+            vertexes[i] = getGremlinVertex();
+        }
+        // create a list of serialized vertexes, each string for one vertex
+        String[] serializedContent = new String[10];
+        for (int i = 0; i < 10; i++) {
+            serializedContent[i] = mapper.writeValueAsString(vertexes[i]);
+        }
+
+        // process each serialized vertex string and deserialize it into a GremlinVertex object
+        GremlinVertex[] deserializedVertexes = Arrays.stream(serializedContent).sequential().map(
+                serializedVertex -> {
+                    try {
+                        return mapper.readValue(serializedVertex, GremlinVertex.class);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+        ).toArray(GremlinVertex[]::new);
+
+        assert Arrays.equals(vertexes, deserializedVertexes);
+
+
+
+
+
+
 
     }
 
